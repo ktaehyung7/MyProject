@@ -9,4 +9,8 @@ release: version 0.1
 	-fixed board size (40*80)
 	-initial value: plus
 
-release: version 0.X
+release: version 0.5
+	-add using arguments logic
+	-add file reading logic: "plus.txt" 
+	-add logic for randomizing board size
+	-add "dump()" function to 2-arguments input logic

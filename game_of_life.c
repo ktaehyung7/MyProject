@@ -5,17 +5,19 @@
 /** purpose: test for streami           **/
 /**                                     **/
 /** dev start date: 2019-09-21          **/
-/** update date   :                     **/
-/** version       : 0.1                 **/
-/**                                     **/
+/** update date   : 2019-09-23          **/
+/** version       : 0.5                 **/
+/** author	  : K.Taehyung          **/
 /**                                     **/
 /*****************************************/
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
+#include <fcntl.h>
 
-#define BOARD_HEIGHT	40
-#define BOARD_WIDTH	80
+int BOARD_HEIGHT=40, BOARD_WIDTH=80;
 
 /* initialize BOARD matrix values */
 void init_val(int board[][BOARD_WIDTH]) {
@@ -31,12 +33,37 @@ void print_board(int board[][BOARD_WIDTH]) {
 	for(i=0; i<BOARD_HEIGHT; i++) {
 		for(j=0; j<BOARD_WIDTH; j++)
 			if(board[i][j] == 0)
-				printf("_");
+				printf(".");
 			else if(board[i][j] ==1)
-				printf("+");
+				printf("*");
 		printf("\n");
 	}
-}
+} 
+
+/* dump board */
+void dump_board(int board[][BOARD_WIDTH]) {
+
+	FILE *pF_w=NULL;
+	int i, j=0;
+
+	pF_w = fopen("./result.txt", "w");
+	if( pF_w == NULL ) {
+		fprintf(stderr, "File open Error..\n");
+	} else {
+
+		for(i=0; i<BOARD_HEIGHT; i++) {
+			for(j=0; j<BOARD_WIDTH; j++)
+				if(board[i][j] == 0)
+					fprintf(pF_w, ".");
+				else if(board[i][j] ==1)
+					fprintf(pF_w, "*");
+			fprintf(pF_w, "\n");
+		}
+	}
+
+	fclose(pF_w);
+
+} 
 
 /* check Neibour cell */
 int check_neibour(int board[][BOARD_WIDTH], int i, int j) {
@@ -59,11 +86,13 @@ int check_neibour(int board[][BOARD_WIDTH], int i, int j) {
 	return count_n;
 }
 
+/************************************************/
 /* operate next step           			*/
 /*   around "1" count : 			*/
 /*   		1 or over 4	: alive-> die	*/
 /*   		2 or 3     	: alive->alive	*/
 /*   		3 		: die->alive 	*/
+/************************************************/
 void next_operation(int board[][BOARD_WIDTH]) {
 	int board_new[BOARD_HEIGHT][BOARD_WIDTH];
 	int i, j, count = 0;
@@ -88,42 +117,88 @@ void next_operation(int board[][BOARD_WIDTH]) {
 			board[i][j] = board_new[i][j];
 }
 
-void main() {
-	int board[BOARD_HEIGHT][BOARD_WIDTH];
+
+/********************************************************/
+/* main logic            				*/
+/*   argument counts : 					*/
+/*   		none	: board random(min 40*80)	*/
+/*   		1  	: read plus.txt			*/
+/*   		2 	: read plus.txt & n gerneration	*/
+/********************************************************/
+void main(int argc, char* argv[]) {
+
 	int i, j=0;
+	int z, x, y;
+	int gen_cnt=0;
+	char buf[1024];
 
+	FILE *pF_r=NULL;
 
-	/* board initialize */
+	if(argc == 1) {
+
+		srand(time(NULL));
+		BOARD_HEIGHT += rand()%20; BOARD_WIDTH += rand()%20;
+
+	}else if(argc == 2 || argc ==3) {
+
+		pF_r = fopen(argv[1], "r");
+		if( pF_r == NULL ) {
+			printf("File open Error..\n");
+		} else {
+			fscanf(pF_r, "%d", &BOARD_HEIGHT);
+			fscanf(pF_r, "%d", &BOARD_WIDTH);
+		}
+
+	}else {
+
+		fprintf(stderr, "Usage: gol <config filename>(option) <generation count>(option)");
+
+	}
+
+	/* board decrare and initialize */
+	int board[BOARD_HEIGHT][BOARD_WIDTH];
 	init_val(board);
 
-	board[19][40] = 1;
-	board[20][40] = 1;
-	board[21][40] = 1;
-	board[20][39] = 1;
-	board[20][41] = 1;
+	if(argc == 1) {
 
-#if 0
-	for(i=0; i<BOARD_HEIGHT; i++) {
-		for(j=0; j<BOARD_WIDTH; j++) {
-			if(board[i][j] == 0) {
-				printf("0");
-			}else if(board[i][j] == 1) {
-				printf("1");
-			}
-				printf("%1d", board[i][j]);
+		/* default initial board values */
+		board[19][20] = 1;
+		board[20][18] = 1;
+		board[20][19] = 1; board[20][20] = 1;
+		board[21][21] = 1;
+
+	}else if(argc == 2 || argc == 3) {
+
+		fscanf(pF_r, "%d", &z);
+		for(i=0; i < z ; i++) {
+			fscanf(pF_r, "%d", &x);
+			fscanf(pF_r, "%d", &y);
+			board[x][y] = 1;
+		}
+		fclose(pF_r);
+
+	}
+
+	if(argc == 1 || argc == 2) {
+
+		while(1) {
+
+			puts("\033[H\033[J");
+			print_board(board);
+			next_operation(board);
+
+			usleep(200000);
 
 		}
-		printf("\n");
-	}
-#else
-	for(i=0; i<20; i++) {
-		puts("\033[H\033[J");
-		print_board(board);
-		next_operation(board);
 
-		sleep(1);
+	}else if(argc == 3) {
+		gen_cnt = atoi(argv[2]);
+printf("gen_cnt = %d\n", gen_cnt);
+		for(i=0; i < gen_cnt; i++)
+			next_operation(board);
 
-//		printf("\n\n\n\n\n");
+		dump_board(board);
+
 	}
-#endif
+
 }
