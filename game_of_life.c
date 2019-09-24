@@ -1,12 +1,12 @@
 /*****************************************/
-/** game of life                        **/
-/** :                                   **/
+/** << game of life >>                  **/
+/**                                     **/
 /**                                     **/
 /** purpose: test for streami           **/
 /**                                     **/
 /** dev start date: 2019-09-21          **/
-/** update date   : 2019-09-23          **/
-/** version       : 0.5                 **/
+/** update date   : 2019-09-24          **/
+/** version       : 0.9                 **/
 /** author	  : K.Taehyung          **/
 /**                                     **/
 /*****************************************/
@@ -19,8 +19,17 @@
 
 int BOARD_HEIGHT=40, BOARD_WIDTH=80;
 
-/* initialize BOARD matrix values */
+/* initialize values when argument is none */
 void init_val(int board[][BOARD_WIDTH]) {
+	/* default initial board values */
+	/* glider */
+	board[3][3] = 1;
+	board[4][4] = 1; board[4][5] = 1; 
+	board[5][3] = 1; board[5][4] = 1;
+}
+
+/* initialize BOARD matrix values(default:0) */
+void init_board_val(int board[][BOARD_WIDTH]) {
 	int i, j=0;
 	for(i=0; i<BOARD_HEIGHT; i++)
 		for(j=0; j<BOARD_WIDTH; j++)
@@ -40,7 +49,7 @@ void print_board(int board[][BOARD_WIDTH]) {
 	}
 } 
 
-/* dump board */
+/* dump board (making result.txt) */
 void dump_board(int board[][BOARD_WIDTH]) {
 
 	FILE *pF_w=NULL;
@@ -48,7 +57,9 @@ void dump_board(int board[][BOARD_WIDTH]) {
 
 	pF_w = fopen("./result.txt", "w");
 	if( pF_w == NULL ) {
+
 		fprintf(stderr, "File open Error..\n");
+
 	} else {
 
 		for(i=0; i<BOARD_HEIGHT; i++) {
@@ -65,8 +76,8 @@ void dump_board(int board[][BOARD_WIDTH]) {
 
 } 
 
-/* check Neibour cell */
-int check_neibour(int board[][BOARD_WIDTH], int i, int j) {
+/* check Neighbour cell */
+int check_neighbour(int board[][BOARD_WIDTH], int i, int j) {
 	int count_n = 0;
 	int w, h, k, l;
 	for(k=-1; k<2; k++) {
@@ -83,6 +94,7 @@ int check_neibour(int board[][BOARD_WIDTH], int i, int j) {
 			}
 		}
 	}
+
 	return count_n;
 }
 
@@ -98,17 +110,16 @@ void next_operation(int board[][BOARD_WIDTH]) {
 	int i, j, count = 0;
 	for(i=0; i<BOARD_HEIGHT; i++) {
 		for(j=0; j<BOARD_WIDTH; j++) {
-			count =	check_neibour(board, i, j);
+
+			count =	check_neighbour(board, i, j);
+
 			if(count == 2) 
 				board_new[i][j] = board[i][j];
 			else if(count == 3)
 				board_new[i][j] = 1;
 			else if(count < 2 || count > 3)
 				board_new[i][j] = 0;
-#if	0
-			if(board_new[i][j] == 1)
-				printf("[%d][%d] check result = %d\n", i, j, count);
-#endif
+
 		}
 	}
 
@@ -136,6 +147,8 @@ void main(int argc, char* argv[]) {
 
 	if(argc == 1) {
 
+		/* randomize board status: considering */
+		/* terminal size, (default) + 0~19     */
 		srand(time(NULL));
 		BOARD_HEIGHT += rand()%20; BOARD_WIDTH += rand()%20;
 
@@ -143,10 +156,14 @@ void main(int argc, char* argv[]) {
 
 		pF_r = fopen(argv[1], "r");
 		if( pF_r == NULL ) {
+
 			printf("File open Error..\n");
+
 		} else {
+
 			fscanf(pF_r, "%d", &BOARD_HEIGHT);
 			fscanf(pF_r, "%d", &BOARD_WIDTH);
+
 		}
 
 	}else {
@@ -157,15 +174,11 @@ void main(int argc, char* argv[]) {
 
 	/* board decrare and initialize */
 	int board[BOARD_HEIGHT][BOARD_WIDTH];
-	init_val(board);
+	init_board_val(board);
 
 	if(argc == 1) {
 
-		/* default initial board values */
-		board[19][20] = 1;
-		board[20][18] = 1;
-		board[20][19] = 1; board[20][20] = 1;
-		board[21][21] = 1;
+		init_val(board);
 
 	}else if(argc == 2 || argc == 3) {
 
@@ -192,8 +205,9 @@ void main(int argc, char* argv[]) {
 		}
 
 	}else if(argc == 3) {
+
 		gen_cnt = atoi(argv[2]);
-printf("gen_cnt = %d\n", gen_cnt);
+
 		for(i=0; i < gen_cnt; i++)
 			next_operation(board);
 

@@ -27,3 +27,6 @@ version 0.5:
 	-add logic for randomizing board size
 	-add "dump()" function to 2-arguments input logic
 
+version 0.9:
+	-refactoring: devide module(function)
+	-rename function name
