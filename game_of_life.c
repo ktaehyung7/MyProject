@@ -1,15 +1,15 @@
-/*****************************************/
-/** << game of life >>                  **/
-/**                                     **/
-/**                                     **/
-/** purpose: test for streami           **/
-/**                                     **/
-/** dev start date: 2019-09-21          **/
-/** update date   : 2019-09-24          **/
-/** version       : 0.9                 **/
-/** author	  : K.Taehyung          **/
-/**                                     **/
-/*****************************************/
+/*************************************************/
+/** << game of life >>                  	**/
+/**                                     	**/
+/**                                     	**/
+/** purpose: test for streami           	**/
+/**                                     	**/
+/** dev start date	: 2019-09-21          	**/
+/** latest update date  : 2019-09-25          	**/
+/** version       	: 1.0                 	**/
+/** author	  	: K.Taehyung     	**/
+/**                    	                 	**/
+/*************************************************/
 
 #include <stdio.h>
 #include <unistd.h>
@@ -19,7 +19,10 @@
 
 int BOARD_HEIGHT=40, BOARD_WIDTH=80;
 
-/* initialize values when argument is none */
+
+/************************************************/
+/* initialize values when argument is none 	*/
+/************************************************/
 void init_val(int board[][BOARD_WIDTH]) {
 	/* default initial board values */
 	/* glider */
@@ -28,7 +31,10 @@ void init_val(int board[][BOARD_WIDTH]) {
 	board[5][3] = 1; board[5][4] = 1;
 }
 
-/* initialize BOARD matrix values(default:0) */
+
+/************************************************/
+/* initialize BOARD matrix values(default:0) 	*/
+/************************************************/
 void init_board_val(int board[][BOARD_WIDTH]) {
 	int i, j=0;
 	for(i=0; i<BOARD_HEIGHT; i++)
@@ -36,7 +42,10 @@ void init_board_val(int board[][BOARD_WIDTH]) {
 			board[i][j] = 0;
 }
 
-/* print board */
+
+/************************************************/
+/* print board 					*/
+/************************************************/
 void print_board(int board[][BOARD_WIDTH]) {
 	int i, j=0;
 	for(i=0; i<BOARD_HEIGHT; i++) {
@@ -49,7 +58,10 @@ void print_board(int board[][BOARD_WIDTH]) {
 	}
 } 
 
-/* dump board (making result.txt) */
+
+/************************************************/
+/* dump board (making result.txt) 		*/
+/************************************************/
 void dump_board(int board[][BOARD_WIDTH]) {
 
 	FILE *pF_w=NULL;
@@ -76,7 +88,9 @@ void dump_board(int board[][BOARD_WIDTH]) {
 
 } 
 
-/* check Neighbour cell */
+/************************************************/
+/* check Neighbour cell 			*/
+/************************************************/
 int check_neighbour(int board[][BOARD_WIDTH], int i, int j) {
 	int count_n = 0;
 	int w, h, k, l;
@@ -141,7 +155,6 @@ void main(int argc, char* argv[]) {
 	int i, j=0;
 	int z, x, y;
 	int gen_cnt=0;
-	char buf[1024];
 
 	FILE *pF_r=NULL;
 
@@ -207,12 +220,17 @@ void main(int argc, char* argv[]) {
 	}else if(argc == 3) {
 
 		gen_cnt = atoi(argv[2]);
+		if(gen_cnt < 0 || gen_cnt > 2000000000) {
 
-		for(i=0; i < gen_cnt; i++)
-			next_operation(board);
+			fprintf(stderr, "2nd argument must be between 0 and 2,000,000,000\n");
+			
+		} else {
 
-		dump_board(board);
+			for(i=0; i < gen_cnt; i++)
+				next_operation(board);
 
+			dump_board(board);
+
+		}
 	}
-
 }
