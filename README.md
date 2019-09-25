@@ -14,6 +14,10 @@ example: game_of_life
 	 game_of_life plus.txt
 	 game_of_life plus.txt 20
 
+
+you can execute by shell script, see "game_of_life.sh" provided.
+
+
 2. Release note
 
 version 0.1:
@@ -30,3 +34,8 @@ version 0.5:
 version 0.9:
 	-refactoring: devide module(function)
 	-rename function name
+
+version 1.0:
+	-add checking arguments exception(generation value is from 0 to 2 billions)
+	-delete unused variable declarations
+	-perform annotation complement
