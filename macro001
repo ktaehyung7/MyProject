@@ -12,7 +12,9 @@ Private Sub CommandButton1_Click()
     Dim j As Integer
     Dim n As Integer
     Dim p As String
+    Dim q As String
     Dim result As String
+    Dim result2 As String
         
     i = 1
     Do While (i < 21)
@@ -20,15 +22,24 @@ Continue:
         Randomize
         n = Int(Rnd * 20) + 1
         p = "E" & Trim(Str(i))
+        q = "F" & Trim(Str(i))
         
         result = Worksheets("Sheet4").Cells(n, 2).Value
+        result2 = Worksheets("Sheet4").Cells(n, 3).Value
         
         If Validation1(result) = 1 Then
             GoTo Continue
         End If
         
         Range(p).Value = result
+        Range(q).Value = result2
         i = i + 1
     Loop
  
+End Sub
+
+Private Sub CommandButton2_Click()
+    Range("E1:F20").Select
+    Selection.ClearContents
+    Range("E1").Select
 End Sub
