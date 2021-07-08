@@ -6,6 +6,17 @@ Function Validation1(s As String)
     End If
 End Function
 
+Private Sub CheckBox1_Click()
+    
+    If CheckBox1.Value = True Then
+        Range("I21").Value = Range("I21").Value + 10
+        Range("E1:H1").Font.Color = vbRed
+    Else
+        Range("I21").Value = Range("I21").Value - 10
+        Range("E1:H1").Font.Color = vbBlack
+    End If
+End Sub
+
 Private Sub CommandButton1_Click()
     
     Dim i As Integer
@@ -39,7 +50,22 @@ Continue:
 End Sub
 
 Private Sub CommandButton2_Click()
-    Range("E1:F20").Select
+    CheckBox1.Value = False
+    CommandButton3.Caption = "-->"
+
+    Range("E1:H20").Select
     Selection.ClearContents
     Range("E1").Select
+End Sub
+
+Private Sub CommandButton3_Click()
+    A = "H1"
+    B = "F1"
+    If Len(Range(A).Value) > 0 Then
+        Range(A).Value = ""
+        CommandButton3.Caption = "-->"
+    Else
+        Range(A).Value = Range(B).Value
+        CommandButton3.Caption = "<--"
+    End If
 End Sub
