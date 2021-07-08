@@ -1,0 +1,34 @@
+Function Validation1(s As String)
+    If Range("E1:E20").Find(What:=s, LookAt:=xlWhole) Is Nothing Then
+        Validation1 = 0
+    Else
+        Validation1 = 1
+    End If
+End Function
+
+Private Sub CommandButton1_Click()
+    
+    Dim i As Integer
+    Dim j As Integer
+    Dim n As Integer
+    Dim p As String
+    Dim result As String
+        
+    i = 1
+    Do While (i < 21)
+Continue:
+        Randomize
+        n = Int(Rnd * 20) + 1
+        p = "E" & Trim(Str(i))
+        
+        result = Worksheets("Sheet4").Cells(n, 2).Value
+        
+        If Validation1(result) = 1 Then
+            GoTo Continue
+        End If
+        
+        Range(p).Value = result
+        i = i + 1
+    Loop
+ 
+End Sub
