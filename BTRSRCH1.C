@@ -178,17 +178,33 @@ void btv_draw(node *p, void (*fptr)(void*,char*), int mode) {
 }
 
 void btv_sort_list(node *p, void (*fpr)(void*)) {
-
+	if(p != NULL) {
+		btv_sort_list(p->left, fpr);
+		fpr(p+1);
+		btv_sort_list(p->right, fpr);
+	}
 }
 
-int_index;
+int _index;
 
 void _sort(node *p,void *a, size_t width) {
-
+	if(p != NULL) {
+		_sort(p->left, a, width);
+		memcpy((char*)a+(_index++)*width, p+1 width);
+		_sort(p->right, a, width);
+	}
 }
 
 node *_balance(int n, void *a, size_t width) {
-
+	int nl, nr;
+	node *p;
+	if(n > 0) {
+		nl = (n-1)/2;
+		nr = n - nl -1;
+		p = (node*)malloc(sizrof(node)+width)
+	}
+	else
+		return NULL;
 }
 
 void btv_balance(node *base, size_t *num, size_t width) {
