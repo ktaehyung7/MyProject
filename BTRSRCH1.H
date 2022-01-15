@@ -25,3 +25,5 @@ void btv_list(node *p, void (*fptr)(void*));
 void btv_draw(node *p, void (*fptr)(void*,char*), int mode);
 void btv_sort_list(node *p, void (*fpr)(void*));
 void btv_balance(node *base, size_t *num, size_t width);
+
+#endif

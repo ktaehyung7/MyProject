@@ -6,7 +6,7 @@
 #include <alloc.h>
 #include <bios.h>
 #include <graphics.h>
-#include "hardcopy.h"
+#include "PROJECT\hardcopy.h"
 
 #define NODE 1
 #define LINK 2
@@ -49,7 +49,7 @@ void *btv_insert(void *key, node *base, size_t *num, size_t width, FCMP fcmp) {
 		else
 			s = s->right;
 	}
-	if((s = ((node*)malloc(sizeof(node) + width)) == NULL)
+	if((s = ((node*)malloc(sizeof(node) + width))) == NULL)
 		return NULL;
 	memcpy(s+1, key, width);
 	s->left = NULL;
@@ -57,7 +57,7 @@ void *btv_insert(void *key, node *base, size_t *num, size_t width, FCMP fcmp) {
 	if(fcmp(key, p+1) < 0 || p == base)
 		p->left = s;
 	else
-		p->rifht = s;
+		p->right = s;
 	(*num)++;
 	return s;
 }
@@ -120,7 +120,7 @@ void btv_list(node *p, void (*fptr)(void*)) {
 	static int x = 0;
 	if(p != NULL) {
 		x += 2;
-		btv_list(p->right, ftpr);
+		btv_list(p->right, fptr);
 		for(i = 2; i < x; i++) printf("   ");
 		fptr(p+1);
 		btv_list(p->left, fptr);
@@ -190,7 +190,7 @@ int _index;
 void _sort(node *p,void *a, size_t width) {
 	if(p != NULL) {
 		_sort(p->left, a, width);
-		memcpy((char*)a+(_index++)*width, p+1 width);
+		memcpy((char*)a+(_index++)*width, p+1, width);
 		_sort(p->right, a, width);
 	}
 }
@@ -201,12 +201,22 @@ node *_balance(int n, void *a, size_t width) {
 	if(n > 0) {
 		nl = (n-1)/2;
 		nr = n - nl -1;
-		p = (node*)malloc(sizrof(node)+width)
+		p = (node*)malloc(sizeof(node)+width);
 	}
 	else
 		return NULL;
 }
 
 void btv_balance(node *base, size_t *num, size_t width) {
-
+	void *tmp;
+	int ntmp = *num;
+	tmp = malloc(width*ntmp);
+	_index = 0;
+	_sort(base->left, tmp, width);
+	ntmp= *num;
+	btv_deleteall(base, num);
+	_index = 0;
+	base->left = _balance(ntmp, tmp, width);
+	*num = ntmp;
+	free(tmp);
 }
